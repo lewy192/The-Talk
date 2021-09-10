@@ -1,0 +1,39 @@
+.chat {
+    background-color: var(--midBlue);
+    height: 72px;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+    margin: 5px 0;
+    border-radius: 4px;
+    .profile-picture {
+        border-radius: 50%;
+        background-color: grey;
+        height: 56px;
+        width: 56px;
+    }
+    h2 {
+        margin: 0;
+    }
+    .chat-name {
+        font-size: smaller;
+    }
+    @media screen and (min-width: 520px) {
+        & {
+            justify-content: space-around;
+            .chat-name {
+                font-size: large;
+            }
+        }
+    }
+    @media screen and (min-width: 768px) {
+        & {
+            flex-direction: row;
+        }
+    }
+}
+
+.chat:hover {
+    filter: brightness(90%);
+    cursor: pointer;
+}
