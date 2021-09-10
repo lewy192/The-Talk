@@ -8,7 +8,7 @@ const AuthApp = lazy(() => import("./AuthApp"));
 function App() {
     const { userState } = useContext(AuthContext);
     const { user } = userState;
-
+    console.log("whole app");
     return (
         <div className="app">
             <Suspense fallback={<div>...loading</div>}>

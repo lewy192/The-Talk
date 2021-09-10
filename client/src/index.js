@@ -5,6 +5,7 @@ import App from "./App";
 
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { AuthProvider } from "./context/authContext";
+import { ChatProvider } from "./context/chatContext";
 
 const client = new ApolloClient({
     uri: "/graphql",
@@ -15,7 +16,9 @@ ReactDOM.render(
     <React.StrictMode>
         <ApolloProvider client={client}>
             <AuthProvider>
-                <App />
+                <ChatProvider>
+                    <App />
+                </ChatProvider>
             </AuthProvider>
         </ApolloProvider>
     </React.StrictMode>,
