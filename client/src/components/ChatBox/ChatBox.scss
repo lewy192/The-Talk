@@ -1,11 +1,10 @@
 .chat {
-    background-color: var(--midBlue);
     height: 72px;
     width: 100%;
     align-items: center;
     flex-direction: column;
-    margin: 5px 0;
-    border-radius: 4px;
+    background-color: var(--whiteBlue);
+    border-bottom: 1px solid rgb(195, 224, 224);
     .profile-picture {
         border-radius: 50%;
         background-color: grey;

@@ -1,11 +1,27 @@
 const { AuthenticationError } = require("apollo-server-errors");
-const { ValidationError } = require("sequelize");
+const { ValidationError, Op } = require("sequelize");
 const { signToken } = require("../utils/auth");
 const { User, Message } = require("./../models/index");
 
 const { DateTime } = require("luxon");
 const resolvers = {
     Query: {
+        users: async () => {
+            try {
+                await User.findAll();
+            } catch (e) {
+                console.log(e);
+            }
+        },
+        chats: async (_, { userId }) => {
+            try {
+                return await User.findAll({
+                    where: { id: { [Op.not]: userId } },
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        },
         getTargetMessages: async (_, { userId, targetId }) => {
             try {
                 const messages = Message.findAll({

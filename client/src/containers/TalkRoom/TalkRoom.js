@@ -15,8 +15,7 @@ const TalkRoom = (props) => {
     return (
         <section className="the-talk-room">
             <ChatHeader recipientUser={recipientUser} />
-            {recipientUser?.username}
-            {/* <ChatBody recipientUser={recipientUser} currentUser={currentUser} /> */}
+            <ChatBody recipientUser={recipientUser} currentUser={currentUser} />
             {/* <ComposeMessage */}
             {/* recipientUser={recipientUser} */}
             {/* currentUser={currentUser} */}
