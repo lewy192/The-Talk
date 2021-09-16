@@ -9,7 +9,6 @@ const Chats = (props) => {
     const { loading, data } = useQuery(ALL_CHATS, {
         variables: { currentUserId: currentUserId },
     });
-    console.log(data);
 
     // Todo Get all users that aren't the current
     return (

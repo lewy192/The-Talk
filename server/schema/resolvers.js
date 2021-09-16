@@ -86,6 +86,18 @@ const resolvers = {
             }
         },
     },
+    Subscription: {
+        messages: {
+            subscribe: (_, args, { pubsub }) => {
+                return {
+                    targetId: 1,
+                    userId: 2,
+                    messageContents:
+                        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil consectetur doloribus repellendus officiis, nisi, iure enim, labore doloremque vel quo perferendis assumenda velit debitis corporis autem. Explicabo neque saepe similique.",
+                };
+            },
+        },
+    },
 };
 
 module.exports = resolvers;

@@ -15,7 +15,7 @@ const httpLink = new HttpLink({
 });
 
 const wsLink = new WebSocketLink({
-    uri: "/graphql",
+    uri: "ws://localhost:3001/subscriptions",
     options: {
         reconnect: true,
         reconnectionAttempts: 20,

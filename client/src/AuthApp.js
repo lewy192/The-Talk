@@ -1,4 +1,4 @@
-import React, { lazy, useContext, useState } from "react";
+import React, { lazy, useContext } from "react";
 import { AuthContext } from "./context/authContext";
 import "./AuthApp.scss";
 import TalkRoom from "./containers/TalkRoom/TalkRoom";
@@ -9,15 +9,13 @@ const AuthApp = () => {
     const { userState } = useContext(AuthContext);
     const { user } = userState;
     const { chatState } = useContext(ChatContext);
-    console.log(chatState);
-    console.log("app render");
     return (
         <div className="the-talk-home flex">
             <aside className="chats">
                 <Chats user={user} />
             </aside>
             {chatState?.recipientUser ? (
-                <TalkRoom currentUser={user} users={chatState} />
+                <TalkRoom users={chatState} />
             ) : (
                 <div className="choose-user">Choose User</div>
             )}

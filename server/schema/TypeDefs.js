@@ -35,6 +35,9 @@ const typeDefs = gql`
             messageContents: String!
         ): Boolean
     }
+    type Subscription {
+        messages: Message
+    }
 `;
 
 module.exports = typeDefs;

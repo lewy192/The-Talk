@@ -3,18 +3,18 @@
     width: 100vw;
     background-color: var(--backgroundGrey);
     .chats {
-        flex-basis: 60px;
+        flex-basis: 80px;
     }
     .the-talk-room {
-        width: calc(100% - 60px);
+        width: calc(100% - 80px);
     }
     @media screen and(min-width: 768px) {
         .chats {
-            flex-basis: 200px;
-            max-width: 200px;
+            flex-basis: 300px;
+            max-width: 300px;
         }
         .the-talk-room {
-            width: calc(100% - 200px);
+            width: calc(100% - 300px);
         }
     }
 }
