@@ -33,10 +33,10 @@ const typeDefs = gql`
             userId: Int!
             targetId: Int!
             messageContents: String!
-        ): Boolean
+        ): Message
     }
     type Subscription {
-        messages: Message
+        messageSent: Message
     }
 `;
 
