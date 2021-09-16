@@ -2,8 +2,11 @@ const { AuthenticationError } = require("apollo-server-errors");
 const { ValidationError, Op } = require("sequelize");
 const { signToken } = require("../utils/auth");
 const { User, Message } = require("./../models/index");
+const { PubSub } = require("graphql-subscriptions");
 
 const { DateTime } = require("luxon");
+
+const pubsub = new PubSub();
 const resolvers = {
     Query: {
         users: async () => {
@@ -75,27 +78,20 @@ const resolvers = {
         },
         sendMessage: async (_, { userId, targetId, messageContents }) => {
             try {
-                const message = await Message.create({
-                    userId,
-                    targetId,
-                    messageContents,
-                    sentAt: DateTime.now().setZone("GMT"),
-                });
+                const sentAt = DateTime.now().setZone("GMT");
+                const payload = { userId, targetId, messageContents, sentAt };
+                pubsub.publish("MESSAGE_CREATED", { messageSent: payload });
+                await Message.create(payload);
+                return payload;
             } catch (err) {
                 console.log(err);
+                return false;
             }
         },
     },
     Subscription: {
-        messages: {
-            subscribe: (_, args, { pubsub }) => {
-                return {
-                    targetId: 1,
-                    userId: 2,
-                    messageContents:
-                        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil consectetur doloribus repellendus officiis, nisi, iure enim, labore doloremque vel quo perferendis assumenda velit debitis corporis autem. Explicabo neque saepe similique.",
-                };
-            },
+        messageSent: {
+            subscribe: (_, args) => pubsub.asyncIterator(["MESSAGE_CREATED"]),
         },
     },
 };
