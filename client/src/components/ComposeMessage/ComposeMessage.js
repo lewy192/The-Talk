@@ -5,7 +5,7 @@ import { useForm } from "../../hooks/useForm";
 import { useMutation } from "@apollo/client";
 import { SEND_MESSAGE } from "./../../utils/mutations";
 
-export const ComposeMessage = (props) => {
+const ComposeMessage = (props) => {
     const [sendMessage, { error }] = useMutation(SEND_MESSAGE);
     const {
         recipientUser: { id: targetId, username: recipientUsername },
@@ -13,21 +13,21 @@ export const ComposeMessage = (props) => {
     } = props;
 
     const sendFormMessage = () => {
-        const messageContents = formState;
-        sendMessage({ variables: { messageContents, targetId, userId } });
+        const { message: messageContents } = formState;
+        sendMessage({
+            variables: {
+                messageContents,
+                targetId: Number(targetId),
+                userId: userId / 1,
+            },
+        });
     };
 
     const { formState, handleFormChange, handleFormSubmit } = useForm(
-        { messageContents: "" },
+        { message: "" },
         sendFormMessage
     );
-
-    useEffect(() => {
-        const listener = handleFormSubmit();
-        const form = document.querySelector(".send-message-form");
-        form.addEventListener("submit", listener);
-        return form.removeEventListener("submit", listener);
-    });
+    const { message } = formState;
 
     return (
         <div>
@@ -36,6 +36,7 @@ export const ComposeMessage = (props) => {
                     type="text"
                     name="message"
                     id="message"
+                    value={message}
                     onChange={handleFormChange}
                 />
                 <input type="submit" value="Send" />
@@ -43,3 +44,5 @@ export const ComposeMessage = (props) => {
         </div>
     );
 };
+
+export default ComposeMessage;
