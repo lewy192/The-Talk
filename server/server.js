@@ -1,55 +1,71 @@
-const express = require("express");
+const { createServer } = require("http");
+const { execute, subscribe } = require("graphql");
+const { SubscriptionServer } = require("subscriptions-transport-ws");
+const { makeExecutableSchema } = require("@graphql-tools/schema");
 const { ApolloServer } = require("apollo-server-express");
-const path = require("path");
-const { typeDefs, resolvers } = require("./schema/index");
-require("dotenv").config();
+const express = require("express");
 const sequelize = require("./config/connection");
-const app = express();
-const PORT = process.env.PORT || 3001;
-const models = require("./models/index");
+const typeDefs = require("./schema/TypeDefs");
+const resolvers = require("./schema/resolvers");
+const { PubSub } = require("graphql-subscriptions");
 // const seed = require("./models/Seed/index");
+
+const path = require("path");
+require("dotenv").config();
+
 (async () => {
-    const server = new ApolloServer({
-        typeDefs,
-        resolvers,
-        // context: ({ req }) => console.log(req.headers.authorization),
-        // context: ({ req }) => {
-        //     const token = req?.headers?.authorization?.split(" ")[1];
-
-        //     if (!token) return { req };
-
-        //     try {
-        //         const { data } = jwt.verify(token, secret, {
-        //             maxAge: expiration,
-        //         });
-        //         req.user = data;
-        //     } catch (err) {
-        //         console.log(err);
-        //     }
-        //     return { req };
-        // },
-    });
-
-    await server.start();
-    server.applyMiddleware({ app });
-
+    const pubsub = new PubSub();
+    const app = express();
+    const PORT = process.env.PORT || 3001;
+    //  middlewear
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
+    // Routes
 
     if (process.env.NODE_ENV === "production") {
         app.use(express.static(path.join(__dirname, "../client/build")));
     }
-
-    // callback route for google credentials server, tokens are received here after a user authorises the app.
     app.get("*", (req, res) => {
         res.sendFile(path.join(__dirname, "../client/build/index.html"));
     });
+    // http server -- needs to be used to handle both http req and also webSockets
+    const httpServer = createServer(app);
 
+    const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+    // apollo sever
+    const server = new ApolloServer({
+        schema,
+        context: ({ req, res }) => ({ req, res, pubsub }),
+        plugins: [
+            {
+                async serverWillStart() {
+                    return {
+                        async drainServer() {
+                            subscriptionServer.close();
+                        },
+                    };
+                },
+            },
+        ],
+    });
+    // subscription sever
+    const subscriptionServer = SubscriptionServer.create(
+        {
+            schema,
+            execute,
+            subscribe,
+        },
+        { server: httpServer, path: server.graphqlPath }
+    );
+
+    await server.start();
     await sequelize.sync({ force: false });
-    await app.listen(PORT, () => {
-        console.log(`Server running on ${PORT}`);
+    server.applyMiddleware({ app });
+    httpServer.listen(PORT, () => {
+        console.log(`server is now running on http://localhost:${PORT}`);
         console.log(
-            `Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`
+            `graphql sandbox is now running on http://localhost:${PORT}${server.graphqlPath}`
         );
     });
 })();

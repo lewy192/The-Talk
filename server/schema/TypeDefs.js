@@ -22,6 +22,7 @@ const typeDefs = gql`
     type Query {
         users: [User]!
         user(userId: ID!): User
+        chats(userId: Int!): [User]
         getTargetMessages(userId: Int!, targetId: Int!): [Message]
         getUserMessages(userId: Int!): [Message]
     }
@@ -32,7 +33,10 @@ const typeDefs = gql`
             userId: Int!
             targetId: Int!
             messageContents: String!
-        ): Boolean
+        ): Message
+    }
+    type Subscription {
+        messageSent: Message
     }
 `;
 
