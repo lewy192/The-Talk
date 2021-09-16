@@ -6,7 +6,7 @@ const AuthContext = createContext({});
 
 const AuthProvider = (props) => {
     const token = getToken("storedToken");
-    const { data: user, exp: sessionExpires } = decodeStoredToken(token);
+    const { data: user, exp: sessionExpires } = decodeStoredToken(token) || {};
     const isSessionValid = sessionExpires > Date.now() / 1000 ? true : false;
     const [userState, setUserState] = useState({
         token: token && isSessionValid ? token : null,
