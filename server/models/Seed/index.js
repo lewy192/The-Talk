@@ -159,5 +159,7 @@ const users = [
     { username: "lewy100", password: "test" },
 ];
 
-User.bulkCreate(users);
-Message.bulkCreate(messages);
+(async () => {
+    // await User.bulkCreate(users);
+    await Message.bulkCreate(messages);
+})();
