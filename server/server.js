@@ -8,7 +8,7 @@ const sequelize = require("./config/connection");
 const typeDefs = require("./schema/TypeDefs");
 const resolvers = require("./schema/resolvers");
 const { PubSub } = require("graphql-subscriptions");
-const seed = require("./models/Seed/index");
+// const seed = require("./models/Seed/index");
 
 const path = require("path");
 require("dotenv").config();
@@ -17,7 +17,7 @@ require("dotenv").config();
     const pubsub = new PubSub();
     const app = express();
     const PORT = process.env.PORT || 3001;
-    //  middlewearm
+    //  middlewear
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     // Routes
