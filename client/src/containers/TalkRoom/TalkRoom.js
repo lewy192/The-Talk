@@ -1,5 +1,4 @@
-import React, { useState, lazy, useContext } from "react";
-import { ChatContext } from "../../context/chatContext";
+import React, { lazy } from "react";
 import "./TalkRoom.scss";
 const ChatHeader = lazy(() =>
     import("./../../components/ChatHeader/ChatHeader")
@@ -16,9 +15,12 @@ const TalkRoom = (props) => {
         <section className="the-talk-room">
             <ChatHeader recipientUser={recipientUser} />
             <ChatBody recipientUser={recipientUser} currentUser={currentUser} />
-            {/* <ComposeMessage */}
-            {/* recipientUser={recipientUser} */}
-            {/* currentUser={currentUser} */}
+            <ComposeMessage
+                recipientUser={recipientUser}
+                currentUser={currentUser}
+            />
+            {/* recipientUser={recipientUser.id}
+            currentUser={currentUser.username} */}
             {/* /> */}
         </section>
     );

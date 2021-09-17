@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import "./ComposeMessage.scss";
 import { useForm } from "../../hooks/useForm";
@@ -6,10 +6,10 @@ import { useMutation } from "@apollo/client";
 import { SEND_MESSAGE } from "./../../utils/mutations";
 
 const ComposeMessage = (props) => {
-    const [sendMessage, { error }] = useMutation(SEND_MESSAGE);
+    const [sendMessage] = useMutation(SEND_MESSAGE);
     const {
-        recipientUser: { id: targetId, username: recipientUsername },
-        currentUser: { id: userId, username: currentUsername },
+        recipientUser: { id: targetId },
+        currentUser: { id: userId },
     } = props;
 
     const sendFormMessage = () => {
