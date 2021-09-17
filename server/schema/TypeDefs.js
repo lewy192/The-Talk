@@ -36,7 +36,7 @@ const typeDefs = gql`
         ): Message
     }
     type Subscription {
-        messageSent: Message
+        messageSent(userId: Int): Message
     }
 `;
 
