@@ -31,11 +31,16 @@ const ComposeMessage = (props) => {
 
     return (
         <div>
-            <form className="send-message-form" onSubmit={handleFormSubmit}>
-                <input
+            <form
+                className="send-message-form flex-row"
+                onSubmit={handleFormSubmit}
+            >
+                <textarea
                     type="text"
                     name="message"
                     id="message"
+                    placeholder="Enter Message Here.."
+                    rows={1}
                     value={message}
                     onChange={handleFormChange}
                 />
