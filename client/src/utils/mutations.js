@@ -23,3 +23,22 @@ export const SIGNUP_USER = gql`
         }
     }
 `;
+
+export const SEND_MESSAGE = gql`
+    mutation Mutation(
+        $messageContents: String!
+        $targetId: Int!
+        $userId: Int!
+    ) {
+        sendMessage(
+            messageContents: $messageContents
+            targetId: $targetId
+            userId: $userId
+        ) {
+            messageContents
+            userId
+            targetId
+            sentAt
+        }
+    }
+`;

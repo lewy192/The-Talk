@@ -1,0 +1,18 @@
+.send-message-form {
+    height: 72px;
+    align-items: center;
+    padding: 0 20px;
+    margin: 0 auto;
+    background-color: var(--midishBlue);
+    gap: 5px;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    & > * {
+        border-radius: 4px;
+        font-size: 18px;
+        border: none;
+    }
+    textarea {
+        flex: 1 1 90%;
+    }
+}

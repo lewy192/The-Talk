@@ -2,9 +2,10 @@ const { AuthenticationError } = require("apollo-server-errors");
 const { ValidationError, Op } = require("sequelize");
 const { signToken } = require("../utils/auth");
 const { User, Message } = require("./../models/index");
-const { PubSub } = require("graphql-subscriptions");
+const { PubSub, withFilter } = require("graphql-subscriptions");
 
 const { DateTime } = require("luxon");
+const { parseValue } = require("graphql");
 
 const pubsub = new PubSub();
 const resolvers = {
@@ -91,7 +92,14 @@ const resolvers = {
     },
     Subscription: {
         messageSent: {
-            subscribe: (_, args) => pubsub.asyncIterator(["MESSAGE_CREATED"]),
+            subscribe: withFilter(
+                (_, args) => pubsub.asyncIterator(["MESSAGE_CREATED"]),
+                (payload, variables) => {
+                    console.log(variables);
+                    console.log(payload);
+                    return payload.messageSent.targetId === variables.userId;
+                }
+            ),
         },
     },
 };
