@@ -15,7 +15,7 @@ const httpLink = new HttpLink({
 });
 
 const wsLink = new WebSocketLink({
-    uri: "ws://localhost:3001/graphql",
+    uri: "ws://localhost:3001/subscriptions",
     options: {
         reconnect: true,
         reconnectionAttempts: 20,
@@ -32,7 +32,7 @@ const link = split(
 );
 
 const client = new ApolloClient({
-    link,
+    link: wsLink,
     cache: new InMemoryCache(),
 });
 
