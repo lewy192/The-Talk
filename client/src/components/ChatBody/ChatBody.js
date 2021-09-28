@@ -32,15 +32,16 @@ const ChatBody = (props) => {
         });
     }, [targetId]);
     const { getTargetMessages: messageArray } = data || {};
+    console.log(messageArray);
     return (
-        <section className="chat-body">
+        <section className="chat-body flex-col">
             {!loading && messageArray ? (
                 messageArray.map(
                     (
                         { messageContents, targetId: messageTargetId, id },
                         index
                     ) => {
-                        return messageTargetId === targetId ? (
+                        return messageTargetId === targetId / 1 ? (
                             <Message
                                 messageText={messageContents}
                                 isSent={true}
