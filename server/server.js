@@ -14,7 +14,6 @@ const path = require("path");
 require("dotenv").config();
 
 (async () => {
-    const pubsub = new PubSub();
     const app = express();
     const PORT = process.env.PORT || 3001;
     //  middlewear
@@ -36,7 +35,13 @@ require("dotenv").config();
     // apollo sever
     const server = new ApolloServer({
         schema,
-        context: ({ req, res }) => ({ req, res, pubsub }),
+        context: async ({ req }) => {
+            const context = {
+                pubsub: new PubSub(),
+                req,
+            };
+            return context;
+        },
         plugins: [
             {
                 async serverWillStart() {
@@ -56,7 +61,7 @@ require("dotenv").config();
             execute,
             subscribe,
         },
-        { server: httpServer, path: server.graphqlPath }
+        { server: httpServer, path: "/subscriptions" }
     );
 
     await server.start();
