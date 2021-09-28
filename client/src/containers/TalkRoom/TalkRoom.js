@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import React, { lazy, useState } from "react";
 import "./TalkRoom.scss";
 const ChatHeader = lazy(() =>
     import("./../../components/ChatHeader/ChatHeader")
@@ -9,6 +9,7 @@ const ComposeMessage = lazy(() =>
 );
 
 const TalkRoom = (props) => {
+    const [talkRoomState, setTalkRoomState] = useState(false);
     const { users } = props;
     const { recipientUser, currentUser } = users || {};
     return (
@@ -16,6 +17,7 @@ const TalkRoom = (props) => {
             <ChatHeader recipientUser={recipientUser} />
             <ChatBody recipientUser={recipientUser} currentUser={currentUser} />
             <ComposeMessage
+                talkRoomState={{ talkRoomState, setTalkRoomState }}
                 recipientUser={recipientUser}
                 currentUser={currentUser}
             />
