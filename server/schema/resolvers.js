@@ -3,16 +3,16 @@ const { ValidationError, Op } = require("sequelize");
 const { signToken } = require("../utils/auth");
 const { User, Message } = require("./../models/index");
 const { PubSub, withFilter } = require("graphql-subscriptions");
-
 const { DateTime } = require("luxon");
-const { parseValue } = require("graphql");
 
 const pubsub = new PubSub();
+
+const MESSAGE_CREATED = "MESSAGE_CREATED";
 const resolvers = {
     Query: {
         users: async () => {
             try {
-                await User.findAll();
+                return await User.findAll();
             } catch (e) {
                 console.log(e);
             }
@@ -28,10 +28,22 @@ const resolvers = {
         },
         getTargetMessages: async (_, { userId, targetId }) => {
             try {
-                const messages = Message.findAll({
-                    where: { targetId, userId },
+                const currentUserMessages = await Message.findAll({
+                    where: {
+                        userId,
+                        targetId,
+                    },
                 });
-                return messages;
+
+                const recipientUserMessages = await Message.findAll({
+                    where: { userId: targetId, targetId: userId },
+                });
+                // order by date
+
+                return [...currentUserMessages, ...recipientUserMessages].sort(
+                    ({ sentAt: aSentAt }, { sentAt: bSentAt }) =>
+                        aSentAt.getTime() - bSentAt.getTime()
+                );
             } catch (e) {
                 console.log(e);
             }
@@ -57,10 +69,7 @@ const resolvers = {
                 const newUser = await User.create({ username, password });
                 newUser["password"] = null;
                 delete newUser.password;
-
                 const token = signToken(newUser);
-                console.log(newUser);
-
                 return { token, user: newUser.dataValues };
             } catch (err) {
                 switch (err.message) {
@@ -78,12 +87,17 @@ const resolvers = {
             }
         },
         sendMessage: async (_, { userId, targetId, messageContents }) => {
+            console.log(pubsub.asyncIterator);
             try {
                 const sentAt = DateTime.now().setZone("GMT");
                 const payload = { userId, targetId, messageContents, sentAt };
-                pubsub.publish("MESSAGE_CREATED", { messageSent: payload });
-                await Message.create(payload);
-                return payload;
+                const message = await Message.create(payload);
+                const { dataValues } = message;
+                await pubsub.publish(MESSAGE_CREATED, {
+                    newMessage: dataValues,
+                });
+
+                return dataValues;
             } catch (err) {
                 console.log(err);
                 return false;
@@ -91,15 +105,23 @@ const resolvers = {
         },
     },
     Subscription: {
-        messageSent: {
+        newMessage: {
             subscribe: withFilter(
-                (_, args) => pubsub.asyncIterator(["MESSAGE_CREATED"]),
-                (payload, variables) => {
-                    console.log(variables);
-                    console.log(payload);
-                    return payload.messageSent.targetId === variables.userId;
+                () => {
+                    return pubsub.asyncIterator([MESSAGE_CREATED]);
+                },
+                (payload, args) => {
+                    return (
+                        (payload.newMessage.targetId === args.recipientId &&
+                            payload.newMessage.userId === args.senderId) ||
+                        (payload.newMessage.targetId == args.senderId &&
+                            payload.newMessage.userId === args.recipientId)
+                    );
                 }
             ),
+        },
+        getTargetMessages: {
+            subscribe: () => pubsub.asyncIterator([MESSAGE_CREATED]),
         },
     },
 };

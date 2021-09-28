@@ -8,7 +8,7 @@ const typeDefs = gql`
     }
 
     type Message {
-        id: ID
+        id: Int
         messageContents: String
         userId: Int
         targetId: Int
@@ -36,7 +36,8 @@ const typeDefs = gql`
         ): Message
     }
     type Subscription {
-        messageSent(userId: Int): Message
+        getTargetMessages(userId: Int!, targetId: Int!): [Message]
+        newMessage(recipientId: Int, senderId: Int): Message
     }
 `;
 
