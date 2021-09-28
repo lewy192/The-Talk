@@ -1,0 +1,16 @@
+.sent {
+    align-self: flex-end;
+    background-color: var(--lightBlue);
+}
+
+.received {
+    align-self: flex-start;
+    background-color: var(--darkBlue);
+}
+
+.message-card {
+    display: inline;
+    padding: 4px 8px;
+    border-radius: 10px;
+    margin: 2px 5px;
+}
